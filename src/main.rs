@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_web::{
     HttpServer,
     App
@@ -16,7 +17,10 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
     /* Start HTTP Server */
     HttpServer::new(|| {
+        let cors = Cors::permissive()
+            .max_age(3600);
         App::new()
+            .wrap(cors)
             .wrap(Logger::default())
             .service(router::index)
     })
