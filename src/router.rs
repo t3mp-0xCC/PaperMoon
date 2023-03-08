@@ -1,8 +1,15 @@
 use actix_web::{
-    HttpResponse,
-    Error,
     get,
+    Error,
+    HttpResponse,
+    HttpRequest,
 };
+use std::fs;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::BufReader;
+use std::path::Path;
+use log::debug;
 
 /* index */
 #[get("/")]
@@ -11,10 +18,20 @@ async fn index() -> Result<HttpResponse, Error> {
 }
 
 
-/*
 /* article */
 #[get("/article/{article_id}")]
-async fn article(path: web::Path<String>) -> Result<HttpResponse, Error> {
-  let article_id = path.into_inner(); 
+async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
+    let matcher = req.match_info();
+    let article_id = match matcher.get("article_id") {
+        Some(id) => id,
+        None => return Ok(HttpResponse::NotFound().body("article_id is missing")),
+    };
+    debug!("article_id: {:?}", article_id);
+    let path = Path::new("./article").join(format!("{}.html", article_id));
+    debug!("article_path: {:?}", path);
+    let content = match fs::read_to_string(path) {
+        Ok(file) => file,
+        Err(_) => return Ok(HttpResponse::NotFound().body("article_id is missing")),
+    };
+    Ok(HttpResponse::Ok().content_type("text/html").body(content))
 }
-*/
