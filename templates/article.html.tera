@@ -1,1 +1,4 @@
-{{article}}
+{% extends "base.html.tera" %}
+{% block content %}
+		<pre>{{article}}</pre>
+{% endblock content %}
