@@ -13,6 +13,10 @@ fn markdown_to_html(md_path: &Path) -> anyhow::Result<String> {
     Ok(html_content)
 }
 
+fn article_converter(md_path: &Path) -> anyhow::Result<()> {
+    Ok(())
+}
+
 #[cfg(test)]
 mod converter_tests {
 
