@@ -31,7 +31,7 @@ async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
     debug!("article_path: {:?}", path);
     let content = match fs::read_to_string(path) {
         Ok(file) => file,
-        Err(_) => return Ok(HttpResponse::NotFound().body("article_id is missing")),
+        Err(_) => return Ok(HttpResponse::NotFound().body(format!("{} is invalid article_id", article_id))),
     };
     Ok(HttpResponse::Ok().content_type("text/html").body(content))
 }
