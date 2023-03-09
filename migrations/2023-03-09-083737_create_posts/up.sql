@@ -8,3 +8,13 @@ CREATE TABLE "posts" (
                          "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
+CREATE FUNCTION set_update_time() RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'UPDATE') THEN
+        NEW.updated_at := now();
+return NEW;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trig_update_user BEFORE UPDATE ON "users" FOR EACH ROW EXECUTE PROCEDURE set_update_time();
