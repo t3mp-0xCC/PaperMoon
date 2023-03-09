@@ -1,6 +1,7 @@
 version: '3.9'
 services:
   db:
+    container_name: blog_db
     image: postgres:14
     env_file:
       - .env
@@ -9,6 +10,7 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
   adminer:
+    container_name: blog_adminer
     image: adminer:latest
     ports:
       - 8888:8080
