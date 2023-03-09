@@ -5,10 +5,8 @@ use actix_web::{
     HttpRequest,
 };
 use std::fs;
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
 use std::path::Path;
+use tera::Tera;
 use log::debug;
 
 /* index */
@@ -33,5 +31,21 @@ async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
         Ok(file) => file,
         Err(_) => return Ok(HttpResponse::NotFound().body(format!("{} is invalid article_id", article_id))),
     };
-    Ok(HttpResponse::Ok().content_type("text/html").body(content))
+
+    /* Tera */
+    let tera = match Tera::new("templates/*") {
+        Ok(t) => t,
+        Err(_) => return Ok(HttpResponse::InternalServerError().body("Something wrong in Tera template")),
+    };
+
+    let mut tera_ctx = tera::Context::new();
+    // key, value
+    tera_ctx.insert("article", &content);
+    let view = match tera.render("article.html.tera", &tera_ctx) {
+        Ok(v) => v,
+        Err(_) => return Ok(HttpResponse::InternalServerError().body("Something wrong in Tera rendering")),
+
+    };
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(view))
 }

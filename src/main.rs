@@ -9,6 +9,7 @@ use env_logger::Env;
 
 extern crate log;
 
+mod converter;
 mod router;
 
 #[actix_web::main]
