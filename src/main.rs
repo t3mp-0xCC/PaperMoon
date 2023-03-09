@@ -11,6 +11,7 @@ extern crate log;
 
 mod converter;
 mod router;
+mod schema;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
