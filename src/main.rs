@@ -10,6 +10,8 @@ use env_logger::Env;
 extern crate log;
 
 mod converter;
+mod db;
+mod models;
 mod router;
 mod schema;
 
