@@ -1,4 +1,5 @@
-use anyhow::Context;
+use anyhow::Context;use easy_scraper::Pattern;
+use log::debug;
 use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::path::Path;
@@ -15,6 +16,20 @@ fn markdown_to_html(md_path: &Path) -> anyhow::Result<String> {
 
 fn article_converter(md_path: &Path) -> anyhow::Result<()> {
     Ok(())
+}
+
+fn get_title_from_html(html_path: &Path) -> anyhow::Result<String> {
+    let pat = Pattern::new(r#"
+        <h1>{{title}}</h1>
+    "#).unwrap();
+    let html_content = fs::read_to_string(html_path)
+        .context("Failed to load html content")?;
+    let matches = pat.matches(&html_content);
+    // if content doesn't have title (<h1> tag)
+    if matches.len() == 0 {
+        return Ok("Untitled".to_string());
+    }
+    Ok(matches[0]["title"].clone())
 }
 
 #[cfg(test)]
@@ -35,5 +50,13 @@ mod converter_tests {
         let mut out = BufWriter::new(html_file);
         out.write_all(html_content.as_bytes())
             .expect("Failed to write html content to path");
+    }
+
+    #[test]
+    fn get_title() {
+        let html_path = Path::new("./test/test.html");
+        let title = get_title_from_html(html_path)
+            .expect("missing title");
+        assert_eq!("title", title)
     }
 }
