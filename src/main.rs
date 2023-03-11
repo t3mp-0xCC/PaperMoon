@@ -10,7 +10,10 @@ use env_logger::Env;
 extern crate log;
 
 mod converter;
+mod db;
+mod models;
 mod router;
+mod schema;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
