@@ -1,4 +1,5 @@
 use actix_cors::Cors;
+use actix_files::Files;
 use actix_web::{
     App,
     HttpServer,
@@ -30,6 +31,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .service(router::index)
             .service(router::article)
+            .service(Files::new("/misc", "./misc").show_files_listing())
     })
     .bind(("127.0.0.1", 8080))?
     .run()

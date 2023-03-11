@@ -5,6 +5,7 @@
 		<title>{% block title %}{% endblock title %} - t3mp-0xCC's Blog</title>
 		<meta name="description" content="t3mp-0xCC's Blog">
 		<meta name="keywords" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="/misc/favicon.ico"/>
 	</head>
 	<body>
 		<h1><a href="/">t3mp-0xCC's Blog</a></h1>
