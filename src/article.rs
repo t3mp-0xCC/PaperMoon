@@ -5,7 +5,6 @@ use std::fs;
 use std::path::Path;
 
 use crate::cruds::insert_new_post;
-use crate::schema::posts::content_html;
 
 fn markdown_to_html(md_path: &Path) -> anyhow::Result<String> {
     let md_content = fs::read_to_string(md_path)
