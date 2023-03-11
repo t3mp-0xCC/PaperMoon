@@ -4,10 +4,10 @@ use actix_web::{
     HttpResponse,
     HttpRequest,
 };
-use std::fs;
-use std::path::Path;
 use tera::Tera;
 use log::debug;
+
+use crate::cruds::get_post_from_id;
 
 /* index */
 #[get("/")]
@@ -25,12 +25,11 @@ async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
         None => return Ok(HttpResponse::NotFound().body("article_id is missing")),
     };
     debug!("article_id: {:?}", article_id);
-    let path = Path::new("./article").join(format!("{}.html", article_id));
-    debug!("article_path: {:?}", path);
-    let content = match fs::read_to_string(path) {
-        Ok(file) => file,
+    let article = match get_post_from_id(&article_id.to_string()) {
+        Ok(a) => a,
         Err(_) => return Ok(HttpResponse::NotFound().body(format!("{} is invalid article_id", article_id))),
     };
+    debug!("article found: {}", article.title);
 
     /* Tera */
     let tera = match Tera::new("templates/*") {
@@ -40,7 +39,8 @@ async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
 
     let mut tera_ctx = tera::Context::new();
     // key, value
-    tera_ctx.insert("article", &content);
+    tera_ctx.insert("title", &article.title);
+    tera_ctx.insert("article", &article.content_html);
     let view = match tera.render("article.html.tera", &tera_ctx) {
         Ok(v) => v,
         Err(_) => return Ok(HttpResponse::InternalServerError().body("Something wrong in Tera rendering")),
