@@ -16,6 +16,7 @@ mod db;
 mod models;
 mod router;
 mod schema;
+mod watcher;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

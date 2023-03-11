@@ -15,6 +15,7 @@ diesel = {version = "2.0.3", features = ["postgres", "chrono", "uuid", "r2d2"]}
 dotenv = "0.15.0"
 easy-scraper = "0.2.0"
 env_logger = "0.10.0"
+futures = "0.3.27"
 html-minifier = "4.0.0"
 log = "0.4.17"
 logger = "0.4.0"
