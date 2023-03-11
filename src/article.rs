@@ -1,8 +1,10 @@
-use anyhow::Context;use easy_scraper::Pattern;
-use log::debug;
+use anyhow::{anyhow, Context};
+use easy_scraper::Pattern;
 use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::path::Path;
+
+use crate::cruds::insert_new_post;
 
 fn markdown_to_html(md_path: &Path) -> anyhow::Result<String> {
     let md_content = fs::read_to_string(md_path)
@@ -14,16 +16,10 @@ fn markdown_to_html(md_path: &Path) -> anyhow::Result<String> {
     Ok(html_content)
 }
 
-fn article_converter(md_path: &Path) -> anyhow::Result<()> {
-    Ok(())
-}
-
-fn get_title_from_html(html_path: &Path) -> anyhow::Result<String> {
+fn get_title_from_html(html_content: String) -> anyhow::Result<String> {
     let pat = Pattern::new(r#"
         <h1>{{title}}</h1>
     "#).unwrap();
-    let html_content = fs::read_to_string(html_path)
-        .context("Failed to load html content")?;
     let matches = pat.matches(&html_content);
     // if content doesn't have title (<h1> tag)
     if matches.len() == 0 {
@@ -32,8 +28,24 @@ fn get_title_from_html(html_path: &Path) -> anyhow::Result<String> {
     Ok(matches[0]["title"].clone())
 }
 
+fn article_importer(md_path: &Path) -> anyhow::Result<()> {
+    let content_id = match md_path.file_stem() {
+        Some(osstr) => match osstr.to_owned().into_string() {
+            Ok(s) => s,
+            Err(_) => return Err(anyhow!("Failed to convert OsStr to String")),
+        },
+        None => return Err(anyhow!("Failed to get conent_id")),
+    };
+    let html = markdown_to_html(md_path)?;
+    let title = get_title_from_html(html.clone())?;
+    insert_new_post(&content_id, &title, &html)?;
+
+    Ok(())
+}
+
+
 #[cfg(test)]
-mod converter_tests {
+mod article_tests {
 
     use super::*;
 
@@ -55,8 +67,17 @@ mod converter_tests {
     #[test]
     fn get_title() {
         let html_path = Path::new("./test/test.html");
-        let title = get_title_from_html(html_path)
+        let html_content = fs::read_to_string(html_path)
+            .expect("Failed to read html path");
+        let title = get_title_from_html(html_content)
             .expect("missing title");
         assert_eq!("title", title)
+    }
+
+    #[test]
+    fn import_post() {
+        let md_path = Path::new("./test/test.md");
+        article_importer(md_path)
+            .expect("Failed to import test Markdown");
     }
 }

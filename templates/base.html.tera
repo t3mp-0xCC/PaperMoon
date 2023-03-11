@@ -2,8 +2,12 @@
 <html lang="ja">
 	<head>
 		<meta charset="utf-8">
+		<title>{% block title %}{% endblock title %} - t3mp-0xCC's Blog</title>
+		<meta name="description" content="t3mp-0xCC's Blog">
+		<meta name="keywords" content="">
 	</head>
 	<body>
+		<h1><a href="/">t3mp-0xCC's Blog</a></h1>
     <div id="content">{% block content %}{% endblock content %}</div>
 	</body>
 </html>
