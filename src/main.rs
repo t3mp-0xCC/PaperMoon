@@ -7,10 +7,7 @@ use actix_web::{
 use actix_web::middleware::Logger;
 use dotenv::dotenv;
 use env_logger::Env;
-use log::error;
 use std::path::Path;
-use std::thread;
-use std::time::Duration;
 
 extern crate log;
 
@@ -27,20 +24,9 @@ async fn main() -> std::io::Result<()> {
     /* Init */
     env_logger::init_from_env(Env::default().default_filter_or("debug"));
     dotenv().ok();
-    /* watcher */
+    /* Watcher */
     let md_folder = Path::new("article_md/");
-    thread::spawn(|| {
-        if let Err(e) = watcher::async_watch(md_folder).await {
-            error!("async_watch: {:?}", e)
-
-    });
-    /*
-    futures::executor::block_on(async {
-        if let Err(e) = watcher::async_watch(md_folder).await {
-            error!("async_watch: {:?}", e)
-        }
-    });
-    */
+    tokio::spawn(watcher::async_watch(md_folder));
     /* Start HTTP Server */
     HttpServer::new(|| {
         let cors = Cors::permissive()

@@ -389,6 +389,7 @@ dependencies = [
  "pulldown-cmark",
  "serde",
  "tera",
+ "tokio",
  "uuid",
 ]
 

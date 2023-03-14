@@ -2,6 +2,7 @@ use futures::{
     channel::mpsc::{channel, Receiver},
     SinkExt, StreamExt,
 };
+use log::debug;
 use notify::{
     Config, Event, RecursiveMode,
     RecommendedWatcher, Watcher
@@ -31,5 +32,5 @@ pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
 }
 
 fn event_handler(event: Event) {
-
+    debug!("{:?}", event);
 }
