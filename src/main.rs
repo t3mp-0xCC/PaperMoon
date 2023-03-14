@@ -8,6 +8,7 @@ use actix_web::middleware::Logger;
 use dotenv::dotenv;
 use env_logger::Env;
 use std::path::Path;
+use std::fs;
 
 extern crate log;
 
@@ -26,6 +27,9 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
     /* Watcher */
     let md_folder = Path::new("article_md/");
+    if md_folder.exists() == false {
+        fs::create_dir_all("article_md")?;
+    }
     tokio::spawn(watcher::async_watch(md_folder));
     /* Start HTTP Server */
     HttpServer::new(|| {
