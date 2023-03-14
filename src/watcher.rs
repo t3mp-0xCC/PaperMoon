@@ -4,7 +4,8 @@ use futures::{
 };
 use log::debug;
 use notify::{
-    Config, Event, RecursiveMode,
+    event::{CreateKind, DataChange, ModifyKind, RemoveKind},
+    Config, Event, EventKind, RecursiveMode,
     RecommendedWatcher, Watcher
 };
 use std::path::Path;
@@ -33,4 +34,19 @@ pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
 
 fn event_handler(event: Event) {
     debug!("{:?}", event);
+    match event.kind {
+        // Create
+        EventKind::Create(CreateKind::File) => {
+            debug!("Create !");
+        },
+        // Modify
+        EventKind::Modify(ModifyKind::Data(DataChange::Any)) => {
+            debug!("Modify !");
+        },
+        // Delete
+        EventKind::Remove(RemoveKind::File) => {
+            debug!("Delete !");
+        }
+        _ => (),
+    };
 }
