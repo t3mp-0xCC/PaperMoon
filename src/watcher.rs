@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use futures::{
     channel::mpsc::{channel, Receiver},
     SinkExt, StreamExt,
@@ -10,6 +11,8 @@ use notify::{
 };
 use std::path::Path;
 
+use crate::article;
+
 fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
     let (mut tx, rx) = channel(1);
     let watcher = RecommendedWatcher::new(move |res| {
@@ -20,24 +23,32 @@ fn async_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Resul
     Ok((watcher, rx))
 }
 
-pub async fn async_watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
+pub async fn async_watch<P: AsRef<Path>>(path: P) -> anyhow::Result<()> {
     let (mut watcher, mut rx) = async_watcher()?;
     watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
     while let Some(res) = rx.next().await {
         match res {
-            Ok(event) => event_handler(event),
-            Err(e) => return Err(e),
+            Ok(event) => match event_handler(event) {
+                Ok(_) => (),
+                Err(e) => return Err(anyhow!(e)),
+            },
+            Err(e) => return Err(anyhow!(e)),
         }
     }
     Ok(())
 }
 
-fn event_handler(event: Event) {
+fn event_handler(event: Event) -> anyhow::Result<()> {
     debug!("{:?}", event);
     match event.kind {
         // Create
         EventKind::Create(CreateKind::File) => {
             debug!("Create !");
+            let md_path = event.paths.first().unwrap();
+            match article::article_importer(&md_path) {
+                Err(e) => return Err(e),
+                Ok(_) => return Ok(()),
+            };
         },
         // Modify
         EventKind::Modify(ModifyKind::Data(DataChange::Any)) => {
@@ -49,4 +60,6 @@ fn event_handler(event: Event) {
         }
         _ => (),
     };
+    Ok(())
 }
+

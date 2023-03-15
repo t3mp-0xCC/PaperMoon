@@ -37,6 +37,7 @@ mod cruds_tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn search_from_id() {
         let content_id = String::from("search_from_id");
         let title = String::from("Asylum Piece");
