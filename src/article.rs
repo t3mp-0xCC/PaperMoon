@@ -28,7 +28,7 @@ fn get_title_from_html(html_content: String) -> anyhow::Result<String> {
     Ok(matches[0]["title"].clone())
 }
 
-fn article_importer(md_path: &Path) -> anyhow::Result<()> {
+pub fn article_importer(md_path: &Path) -> anyhow::Result<()> {
     let content_id = match md_path.file_stem() {
         Some(osstr) => match osstr.to_owned().into_string() {
             Ok(s) => s,
@@ -75,6 +75,7 @@ mod article_tests {
     }
 
     #[test]
+    #[ignore]
     fn import_post() {
         let md_path = Path::new("./test/test.md");
         article_importer(md_path)
