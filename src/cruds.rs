@@ -23,7 +23,7 @@ pub fn insert_new_post (
     Ok(())
 }
 
-pub fn get_post_from_id(cid: &String) -> anyhow::Result<Post> {
+pub fn get_post_from_content_id(cid: &String) -> anyhow::Result<Post> {
     use crate::schema::posts::dsl::*;
     let conn = &mut establish_connection()?;
     match posts.filter(content_id.eq(cid)).first::<Post>(conn) {

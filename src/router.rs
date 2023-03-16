@@ -7,7 +7,7 @@ use actix_web::{
 use tera::Tera;
 use log::debug;
 
-use crate::cruds::get_post_from_id;
+use crate::cruds::get_post_from_content_id;
 
 /* index */
 #[get("/")]
@@ -25,7 +25,7 @@ async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
         None => return Ok(HttpResponse::NotFound().body("article_id is missing")),
     };
     debug!("article_id: {:?}", article_id);
-    let article = match get_post_from_id(&article_id.to_string()) {
+    let article = match get_post_from_content_id(&article_id.to_string()) {
         Ok(a) => a,
         Err(_) => return Ok(HttpResponse::NotFound().body(format!("{} is invalid article_id", article_id))),
     };
