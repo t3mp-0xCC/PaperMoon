@@ -10,7 +10,7 @@ use crate::db::establish_connection;
 use crate::models::{NewPost, Post};
 use crate::schema::posts;
 
-pub fn insert_new_post (
+pub fn create_post (
     content_id: &String,
     title: &String,
     content_html: &String
@@ -23,13 +23,57 @@ pub fn insert_new_post (
     Ok(())
 }
 
-pub fn get_post_from_id(cid: &String) -> anyhow::Result<Post> {
+pub fn get_post_from_content_id(cid: &String) -> anyhow::Result<Post> {
     use crate::schema::posts::dsl::*;
     let conn = &mut establish_connection()?;
     match posts.filter(content_id.eq(cid)).first::<Post>(conn) {
         Ok(p) => Ok(p),
         Err(_) => return Err(anyhow!("Failed to filter posts")),
     }
+}
+
+pub fn check_duplicate(cid: &String) -> anyhow::Result<()> {
+    use crate::schema::posts::dsl::*;
+    let conn = &mut establish_connection()?;
+    match posts.filter(content_id.eq(cid)).execute(conn) {
+        Ok(count) =>  {
+            if count == 0 {
+                return Ok(());
+            } else {
+                return Err(anyhow!("The post seems duplicated"));
+            }
+        },
+        Err(_) => return Err(anyhow!("Failed to check duplicated posts")),
+    };
+}
+
+pub fn update_post (
+    content_id: &String,
+    new_title: &String,
+    new_content_html: &String,
+) -> anyhow::Result<()> {
+    let conn = &mut establish_connection()?;
+    let target = posts::dsl::posts
+        .filter(posts::dsl::content_id.eq(content_id));
+    diesel::update(target)
+        .set(posts::dsl::title.eq(new_title))
+        .execute(conn)
+        .with_context(|| "Failed to update title")?;
+    diesel::update(target)
+        .set(posts::dsl::content_html.eq(new_content_html))
+        .execute(conn)
+        .with_context(|| "Failed to update content_html")?;
+    Ok(())
+}
+
+pub fn delete_post (content_id: &String) -> anyhow::Result<()> {
+    let conn = &mut establish_connection()?;
+    let target = posts::dsl::posts
+        .filter(posts::dsl::content_id.eq(content_id));
+    diesel::delete(target)
+        .execute(conn)
+        .with_context(|| "Failed to delete post")?;
+    Ok(())
 }
 
 #[cfg(test)]
@@ -42,9 +86,9 @@ mod cruds_tests {
         let content_id = String::from("search_from_id");
         let title = String::from("Asylum Piece");
         let content_html = String::from("Knock Knock");
-        insert_new_post(&content_id, &title, &content_html)
+        create_post(&content_id, &title, &content_html)
             .expect("Failed to insert test post");
-        let test_post = get_post_from_id(&content_id)
+        let test_post = get_post_from_content_id(&content_id)
             .expect("Failed to search from id");
         assert_eq!(test_post.title, title)
     }

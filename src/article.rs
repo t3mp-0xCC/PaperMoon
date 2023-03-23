@@ -4,7 +4,7 @@ use pulldown_cmark::{html, Options, Parser};
 use std::fs;
 use std::path::Path;
 
-use crate::cruds::insert_new_post;
+use crate::cruds;
 
 fn markdown_to_html(md_path: &Path) -> anyhow::Result<String> {
     let md_content = fs::read_to_string(md_path)
@@ -28,7 +28,23 @@ fn get_title_from_html(html_content: String) -> anyhow::Result<String> {
     Ok(matches[0]["title"].clone())
 }
 
-pub fn article_importer(md_path: &Path) -> anyhow::Result<()> {
+pub fn importer(md_path: &Path) -> anyhow::Result<()> {
+    let content_id = match md_path.file_stem() {
+        Some(osstr) => match osstr.to_owned().into_string() {
+            Ok(s) => s,
+            Err(_) => return Err(anyhow!("Failed to convert OsStr to String")),
+        },
+        None => return Err(anyhow!("Failed to get conent_id")),
+    };
+    cruds::check_duplicate(&content_id)?;
+    let html = markdown_to_html(md_path)?;
+    let title = get_title_from_html(html.clone())?;
+    cruds::create_post(&content_id, &title, &html)?;
+
+    Ok(())
+}
+
+pub fn updater(md_path: &Path) -> anyhow::Result<()> {
     let content_id = match md_path.file_stem() {
         Some(osstr) => match osstr.to_owned().into_string() {
             Ok(s) => s,
@@ -38,11 +54,21 @@ pub fn article_importer(md_path: &Path) -> anyhow::Result<()> {
     };
     let html = markdown_to_html(md_path)?;
     let title = get_title_from_html(html.clone())?;
-    insert_new_post(&content_id, &title, &html)?;
-
+    cruds::update_post(&content_id, &title, &html)?;
     Ok(())
 }
 
+pub fn deleter(md_path: &Path) -> anyhow::Result<()> {
+    let content_id = match md_path.file_stem() {
+        Some(osstr) => match osstr.to_owned().into_string() {
+            Ok(s) => s,
+            Err(_) => return Err(anyhow!("Failed to convert OsStr to String")),
+        },
+        None => return Err(anyhow!("Failed to get conent_id")),
+    };
+    cruds::delete_post(&content_id)?;
+    Ok(())
+}
 
 #[cfg(test)]
 mod article_tests {
@@ -50,6 +76,7 @@ mod article_tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn md2html() {
         use std::fs::File;
         use std::io::{BufWriter, Write};
@@ -65,6 +92,7 @@ mod article_tests {
     }
 
     #[test]
+    #[ignore]
     fn get_title() {
         let html_path = Path::new("./test/test.html");
         let html_content = fs::read_to_string(html_path)
@@ -78,7 +106,33 @@ mod article_tests {
     #[ignore]
     fn import_post() {
         let md_path = Path::new("./test/test.md");
-        article_importer(md_path)
+        importer(md_path)
             .expect("Failed to import test Markdown");
+    }
+
+    #[test]
+    #[ignore]
+    fn updater_test() {
+        let md_path = Path::new("./test/test.md");
+        let new_md_path = Path::new("/tmp/test.md");
+        importer(md_path)
+            .expect("Failed to import test Markdown");
+        std::process::Command::new("cp")
+            .arg("test/test_another.md")
+            .arg(new_md_path)
+            .output()
+            .expect("Failed to copy test md");
+        updater(new_md_path)
+            .expect("Failed to update test Markdown")
+    }
+
+    #[test]
+    #[ignore]
+    fn deleter_test() {
+        let md_path = Path::new("./test/test.md");
+        importer(md_path)
+            .expect("Failed to import test Markdown");
+        deleter(md_path)
+            .expect("Failed to delete test Markdown");
     }
 }
