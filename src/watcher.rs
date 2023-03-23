@@ -45,7 +45,6 @@ fn event_handler(event: Event) -> anyhow::Result<()> {
         // Create
         EventKind::Create(CreateKind::File) => {
             debug!("Create !");
-            // TODO: Check title dup
             match article::importer(&md_path) {
                 Err(e) => return Err(e),
                 Ok(_) => return Ok(()),
