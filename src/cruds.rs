@@ -23,6 +23,25 @@ pub fn insert_new_post (
     Ok(())
 }
 
+pub fn update_post (
+    content_id: &String,
+    new_title: &String,
+    new_content_html: &String,
+) -> anyhow::Result<()> {
+    let conn = &mut establish_connection()?;
+    let target = posts::dsl::posts
+        .filter(posts::dsl::content_id.eq(content_id));
+    diesel::update(target)
+        .set(posts::dsl::title.eq(new_title))
+        .execute(conn)
+        .with_context(|| "Failed to update title")?;
+    diesel::update(target)
+        .set(posts::dsl::content_html.eq(new_content_html))
+        .execute(conn)
+        .with_context(|| "Failed to update content_html")?;
+    Ok(())
+}
+
 pub fn get_post_from_content_id(cid: &String) -> anyhow::Result<Post> {
     use crate::schema::posts::dsl::*;
     let conn = &mut establish_connection()?;
