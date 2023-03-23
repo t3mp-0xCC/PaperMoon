@@ -23,3 +23,4 @@ pub struct  NewPost<'a> {
     pub title: &'a String,
     pub content_html: &'a String,
 }
+
