@@ -1,17 +1,56 @@
 /* Gruvbox Theme */
 
+/* Page Head */
+header {
+    width: 100%;
+    height: 50px;
+    background: #B8BB26;
+    padding: 20px 50px;
+    align-items: center;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+    display: flex;
+}
+
+header h1 a {
+  color: #3C3836;
+}
+
+header .gnav .menu li a {
+  color: #3C3836;
+}
+
+header .gnav .menu {
+    display: flex;
+}
+
+
+header .gnav .menu li {
+    list-style: none;
+}
+header .gnav .menu li + li {
+    margin-left: 40px;
+}
+
 /* Background */
 body {
   background-color: #282828;
 }
 
+#content {
+    margin-left: 40px;
+}
 /* Text Colors */
 body, pre, code, a {
   color: #ebdbb2;
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1 {
+  color: #B65D0E;
+}
+h2, h3, h4, h5, h6 {
   color: #b8bb26;
 }
 
@@ -63,4 +102,5 @@ ul, ol {
 li {
   color: #ebdbb2;
 }
+
 

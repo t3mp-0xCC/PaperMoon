@@ -1,16 +1,30 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="utf-8">
-		<title>{% block title %}{% endblock title %} - t3mp-0xCC's Blog</title>
-		<meta name="description" content="t3mp-0xCC's Blog">
-		<meta name="keywords" content="">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock title %} - t3mp-0xCC's Blog</title>
+    <meta name="description" content="t3mp-0xCC's Blog">
+    <meta name="keywords" content="">
     <link rel="shortcut icon" type="image/x-icon" href="/misc/favicon.ico"/>
     <link rel="stylesheet" href="/static/style.css"/>
-		<script type="text/javascript" src="/static/index.js"></script>
-	</head>
-	<body>
-		<h1><a href="/">t3mp-0xCC's Blog</a></h1>
-    <div id="content">{% block content %}{% endblock content %}</div>
+    <script type="text/javascript" src="/static/index.js"></script>
+  </head>
+  <header>
+    <div class="site-name">
+      <h1><a href="/">t3mp-0xCC's Blog</a></h1>
+    </div>
+    <nav class="gnav">
+      <ul class="menu">
+        <li><h3><a href="">blog</a></h3></li>
+        <li><h3><a href="">portfolio</a></h3></li>
+        <li><h3><a href="">about</a></h3></li>
+      </ul>
+    </nav>
+  </header>
+  <body>
+    <div id="content">
+      {% block content %}
+      {% endblock content %}
+    </div>
 	</body>
 </html>
