@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
             .service(router::index)
             .service(router::article)
             .service(Files::new("/misc", "./misc").show_files_listing())
+            .service(Files::new("/static", "./static").show_files_listing())
     })
     .bind(("127.0.0.1", 8080))?
     .run()

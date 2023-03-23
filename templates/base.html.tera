@@ -6,6 +6,7 @@
 		<meta name="description" content="t3mp-0xCC's Blog">
 		<meta name="keywords" content="">
     <link rel="shortcut icon" type="image/x-icon" href="/misc/favicon.ico"/>
+		<script type="text/javascript" src="/static/index.js"></script>
 	</head>
 	<body>
 		<h1><a href="/">t3mp-0xCC's Blog</a></h1>
