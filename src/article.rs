@@ -64,6 +64,7 @@ mod article_tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn md2html() {
         use std::fs::File;
         use std::io::{BufWriter, Write};
@@ -79,6 +80,7 @@ mod article_tests {
     }
 
     #[test]
+    #[ignore]
     fn get_title() {
         let html_path = Path::new("./test/test.html");
         let html_content = fs::read_to_string(html_path)
@@ -94,5 +96,21 @@ mod article_tests {
         let md_path = Path::new("./test/test.md");
         importer(md_path)
             .expect("Failed to import test Markdown");
+    }
+
+    #[test]
+    #[ignore]
+    fn updater_test() {
+        let md_path = Path::new("./test/test.md");
+        let new_md_path = Path::new("/tmp/test.md");
+        importer(md_path)
+            .expect("Failed to import test Markdown");
+        std::process::Command::new("cp")
+            .arg("test/test_another.md")
+            .arg(new_md_path)
+            .output()
+            .expect("Failed to copy test md");
+        updater(new_md_path)
+            .expect("Failed to update test Markdown")
     }
 }

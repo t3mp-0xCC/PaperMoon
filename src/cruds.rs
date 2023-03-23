@@ -63,7 +63,7 @@ mod cruds_tests {
         let content_html = String::from("Knock Knock");
         insert_new_post(&content_id, &title, &content_html)
             .expect("Failed to insert test post");
-        let test_post = get_post_from_id(&content_id)
+        let test_post = get_post_from_content_id(&content_id)
             .expect("Failed to search from id");
         assert_eq!(test_post.title, title)
     }
