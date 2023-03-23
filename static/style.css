@@ -1,14 +1,66 @@
-html {
- box-sizing:border-box
-}
-*,
-*:before,
-*:after {
- box-sizing:inherit
-}
+/* Gruvbox Theme */
+
+/* Background */
 body {
- margin:0
+  background-color: #282828;
 }
+
+/* Text Colors */
+body, pre, code, a {
+  color: #ebdbb2;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #b8bb26;
+}
+
+/* Hyperlinks */
 a {
- background-color:rgba(0,0,0,0)
+  color: #8ec07c;
+  text-decoration: none;
 }
+
+a:hover {
+  color: #ebdbb2;
+  text-decoration: underline;
+}
+
+/* Code Blocks */
+pre {
+  background-color: #3c3836;
+  color: #ebdbb2;
+  padding: 10px;
+  overflow-x: auto;
+}
+
+code {
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+pre code {
+  font-size: 1em;
+}
+
+pre code[class*="language-"] {
+  background-color: transparent;
+}
+
+/* Blockquote */
+blockquote {
+  color: #bdae93;
+  border-left: 3px solid #bdae93;
+  padding-left: 10px;
+  margin: 10px 0;
+}
+
+/* Lists */
+ul, ol {
+  margin-left: 30px;
+}
+
+li {
+  color: #ebdbb2;
+}
+
