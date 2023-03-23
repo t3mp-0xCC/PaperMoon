@@ -38,7 +38,7 @@ pub fn importer(md_path: &Path) -> anyhow::Result<()> {
     };
     let html = markdown_to_html(md_path)?;
     let title = get_title_from_html(html.clone())?;
-    cruds::insert_new_post(&content_id, &title, &html)?;
+    cruds::create_post(&content_id, &title, &html)?;
 
     Ok(())
 }
@@ -123,5 +123,14 @@ mod article_tests {
             .expect("Failed to copy test md");
         updater(new_md_path)
             .expect("Failed to update test Markdown")
+    }
+
+    #[test]
+    fn deleter_test() {
+        let md_path = Path::new("./test/test.md");
+        importer(md_path)
+            .expect("Failed to import test Markdown");
+        deleter(md_path)
+            .expect("Failed to delete test Markdown");
     }
 }

@@ -10,7 +10,7 @@ use crate::db::establish_connection;
 use crate::models::{NewPost, Post};
 use crate::schema::posts;
 
-pub fn insert_new_post (
+pub fn create_post (
     content_id: &String,
     title: &String,
     content_html: &String
