@@ -46,7 +46,7 @@ fn event_handler(event: Event) -> anyhow::Result<()> {
             debug!("Create !");
             // TODO: Check title dup
             let md_path = event.paths.first().unwrap();
-            match article::article_importer(&md_path) {
+            match article::importer(&md_path) {
                 Err(e) => return Err(e),
                 Ok(_) => return Ok(()),
             };
@@ -54,7 +54,11 @@ fn event_handler(event: Event) -> anyhow::Result<()> {
         // Modify
         EventKind::Modify(ModifyKind::Data(DataChange::Any)) => {
             debug!("Modify !");
-            // TODO: Update article on the database
+            let md_path = event.paths.first().unwrap();
+            match article::updater(&md_path) {
+                Err(e) => return Err(e),
+                Ok(_) => return Ok(()),
+            };
         },
         // Delete
         EventKind::Remove(RemoveKind::File) => {
