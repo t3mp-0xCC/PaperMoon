@@ -40,12 +40,12 @@ pub async fn async_watch<P: AsRef<Path>>(path: P) -> anyhow::Result<()> {
 
 fn event_handler(event: Event) -> anyhow::Result<()> {
     debug!("{:?}", event);
+    let md_path = event.paths.first().unwrap();
     match event.kind {
         // Create
         EventKind::Create(CreateKind::File) => {
             debug!("Create !");
             // TODO: Check title dup
-            let md_path = event.paths.first().unwrap();
             match article::importer(&md_path) {
                 Err(e) => return Err(e),
                 Ok(_) => return Ok(()),
@@ -54,7 +54,6 @@ fn event_handler(event: Event) -> anyhow::Result<()> {
         // Modify
         EventKind::Modify(ModifyKind::Data(DataChange::Any)) => {
             debug!("Modify !");
-            let md_path = event.paths.first().unwrap();
             match article::updater(&md_path) {
                 Err(e) => return Err(e),
                 Ok(_) => return Ok(()),
@@ -63,7 +62,6 @@ fn event_handler(event: Event) -> anyhow::Result<()> {
         // Delete
         EventKind::Remove(RemoveKind::File) => {
             debug!("Delete !");
-            let md_path = event.paths.first().unwrap();
             match article::deleter(&md_path) {
                 Err(e) => return Err(e),
                 Ok(_) => return Ok(()),
