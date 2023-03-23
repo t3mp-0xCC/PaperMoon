@@ -23,6 +23,15 @@ pub fn insert_new_post (
     Ok(())
 }
 
+pub fn get_post_from_content_id(cid: &String) -> anyhow::Result<Post> {
+    use crate::schema::posts::dsl::*;
+    let conn = &mut establish_connection()?;
+    match posts.filter(content_id.eq(cid)).first::<Post>(conn) {
+        Ok(p) => Ok(p),
+        Err(_) => return Err(anyhow!("Failed to filter posts")),
+    }
+}
+
 pub fn update_post (
     content_id: &String,
     new_title: &String,
@@ -40,15 +49,6 @@ pub fn update_post (
         .execute(conn)
         .with_context(|| "Failed to update content_html")?;
     Ok(())
-}
-
-pub fn get_post_from_content_id(cid: &String) -> anyhow::Result<Post> {
-    use crate::schema::posts::dsl::*;
-    let conn = &mut establish_connection()?;
-    match posts.filter(content_id.eq(cid)).first::<Post>(conn) {
-        Ok(p) => Ok(p),
-        Err(_) => return Err(anyhow!("Failed to filter posts")),
-    }
 }
 
 #[cfg(test)]
