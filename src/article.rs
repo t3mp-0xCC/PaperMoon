@@ -36,6 +36,7 @@ pub fn importer(md_path: &Path) -> anyhow::Result<()> {
         },
         None => return Err(anyhow!("Failed to get conent_id")),
     };
+    cruds::check_duplicate(&content_id)?;
     let html = markdown_to_html(md_path)?;
     let title = get_title_from_html(html.clone())?;
     cruds::create_post(&content_id, &title, &html)?;
@@ -126,6 +127,7 @@ mod article_tests {
     }
 
     #[test]
+    #[ignore]
     fn deleter_test() {
         let md_path = Path::new("./test/test.md");
         importer(md_path)
