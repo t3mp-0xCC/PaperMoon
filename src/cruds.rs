@@ -51,6 +51,16 @@ pub fn update_post (
     Ok(())
 }
 
+pub fn delete_post (content_id: &String) -> anyhow::Result<()> {
+    let conn = &mut establish_connection()?;
+    let target = posts::dsl::posts
+        .filter(posts::dsl::content_id.eq(content_id));
+    diesel::delete(target)
+        .execute(conn)
+        .with_context(|| "Failed to delete post")?;
+    Ok(())
+}
+
 #[cfg(test)]
 mod cruds_tests {
     use super::*;

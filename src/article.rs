@@ -57,6 +57,17 @@ pub fn updater(md_path: &Path) -> anyhow::Result<()> {
     Ok(())
 }
 
+pub fn deleter(md_path: &Path) -> anyhow::Result<()> {
+    let content_id = match md_path.file_stem() {
+        Some(osstr) => match osstr.to_owned().into_string() {
+            Ok(s) => s,
+            Err(_) => return Err(anyhow!("Failed to convert OsStr to String")),
+        },
+        None => return Err(anyhow!("Failed to get conent_id")),
+    };
+    cruds::delete_post(&content_id)?;
+    Ok(())
+}
 
 #[cfg(test)]
 mod article_tests {

@@ -63,7 +63,11 @@ fn event_handler(event: Event) -> anyhow::Result<()> {
         // Delete
         EventKind::Remove(RemoveKind::File) => {
             debug!("Delete !");
-            // TODO: Delete article on the database
+            let md_path = event.paths.first().unwrap();
+            match article::deleter(&md_path) {
+                Err(e) => return Err(e),
+                Ok(_) => return Ok(()),
+            };
         }
         _ => (),
     };
