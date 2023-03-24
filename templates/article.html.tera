@@ -1,7 +1,11 @@
 {% extends "base.html.tera" %}
-{% block title %}Index{% endblock title %}
-{% block content %}
-		<h1>{{title}}</h1>
-		<pre>{{article}}</pre>
-{% endblock content %}
-
+{% block title %}{{title}}{% endblock title %}
+<section class="post" itemscope itemtype="http://schema.org/BlogPosting">
+<div class="content">
+  {% block content %}
+  <h1 class="post-title" itemprop="name">{{title}}</h1>
+  <article role="article" id="scroll" class="post-content" itemprop="articleBody">
+    {{article}}
+  {% endblock content %}
+</div>
+</section>
