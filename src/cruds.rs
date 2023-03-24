@@ -28,7 +28,7 @@ pub fn get_post_from_content_id(cid: &String) -> anyhow::Result<Post> {
     let conn = &mut establish_connection()?;
     match posts.filter(content_id.eq(cid)).first::<Post>(conn) {
         Ok(p) => Ok(p),
-        Err(_) => return Err(anyhow!("Failed to filter posts")),
+        Err(e) => return Err(anyhow!("{}", e)),
     }
 }
 
@@ -43,7 +43,7 @@ pub fn check_duplicate(cid: &String) -> anyhow::Result<()> {
                 return Err(anyhow!("The post seems duplicated"));
             }
         },
-        Err(_) => return Err(anyhow!("Failed to check duplicated posts")),
+        Err(e) => return Err(anyhow!("{}", e)),
     };
 }
 
