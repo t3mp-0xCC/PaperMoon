@@ -1,0 +1,22 @@
+{% extends "base.html.tera" %}
+{% block title %}Posts{% endblock title %}
+{% block content %}
+  <h1>Blog Posts</h1>
+  <table class="table">
+    <thread>
+      <tr>
+        <th scope="col">title</th>
+        <th scope="col">created_at</th>
+      </tr>
+    </thread>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+          <th scope="row">{{ post.title }}</th>
+          <!-- TODO: created_at and updated_at -->
+          <td>{{ post.id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
