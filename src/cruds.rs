@@ -3,12 +3,12 @@ use diesel::{
     insert_into,
     ExpressionMethods,
     RunQueryDsl,
-    QueryDsl
+    QueryDsl, SelectableHelper
 };
 
 use crate::db::establish_connection;
 use crate::models::{NewPost, Post};
-use crate::schema::posts;
+use crate::schema::{posts, self};
 
 pub fn create_post (
     content_id: &String,
@@ -44,6 +44,14 @@ pub fn check_duplicate(cid: &String) -> anyhow::Result<()> {
             }
         },
         Err(_) => return Err(anyhow!("Failed to check duplicated posts")),
+    };
+}
+
+pub fn get_post_list() -> anyhow::Result<Vec<Post>> {
+    let conn = &mut establish_connection()?;
+    match schema::posts::dsl::posts.select(Post::as_select()).load::<Post>(conn) {
+        Ok(v) => return Ok(v),
+        Err(e) => return Err(anyhow!("{}", e)),
     };
 }
 
