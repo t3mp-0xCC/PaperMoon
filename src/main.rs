@@ -41,6 +41,8 @@ async fn main() -> std::io::Result<()> {
             .service(router::index)
             .service(router::article)
             .service(router::article_list)
+            .service(router::about)
+            .service(router::portfolio)
             .service(Files::new("/misc", "./misc").show_files_listing())
             .service(Files::new("/static", "./static").show_files_listing())
     })

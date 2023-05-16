@@ -70,3 +70,16 @@ async fn article(req: HttpRequest) -> Result<HttpResponse, Error> {
 
     Ok(HttpResponse::Ok().content_type("text/html").body(view))
 }
+
+/* about */
+#[get("/about")]
+async fn about() -> Result<HttpResponse, Error> {
+    Ok(HttpResponse::Ok().content_type("text/html").body("about"))
+}
+
+/* portfolio */
+#[get("/portfolio")]
+async fn portfolio() -> Result<HttpResponse, Error> {
+    Ok(HttpResponse::Ok().content_type("text/html").body("portfolio"))
+}
+
