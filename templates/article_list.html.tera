@@ -2,21 +2,10 @@
 {% block title %}Posts{% endblock title %}
 {% block content %}
   <h1>Blog Posts</h1>
-  <table class="table">
-    <thread>
-      <tr>
-        <th scope="col">title</th>
-        <th scope="col">created_at</th>
-      </tr>
-    </thread>
-    <tbody>
-        {% for post in posts %}
-        <tr>
-          <th scope="row">{{ post.title }}</th>
-          <!-- TODO: created_at and updated_at -->
-          <td>{{ post.id }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-  </table>
+  {% for Post in posts %}
+    <div class="blog-post">
+      <a href="/article/{{Post.content_id}}"> <h2> {{Post.title}} </h2> </a>
+      <p> {{Post.updated_at}} </p>
+    </div>
+  {% endfor %}
 {% endblock content %}
