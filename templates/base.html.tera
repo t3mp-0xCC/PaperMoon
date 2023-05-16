@@ -2,8 +2,8 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}{% endblock title %} - t3mp-0xCC's Blog</title>
-    <meta name="description" content="t3mp-0xCC's Blog">
+    <title>{% block title %}{% endblock title %} - PaperMoon</title>
+    <meta name="description" content="PaperMoon">
     <meta name="keywords" content="">
     <link rel="shortcut icon" type="image/x-icon" href="/misc/favicon.ico"/>
     <link rel="stylesheet" href="/static/style.css"/>
@@ -11,7 +11,7 @@
   </head>
   <header>
     <div class="site-name">
-      <h1><a href="/">t3mp-0xCC's Blog</a></h1>
+      <h1><a href="/">PaperMoon</a></h1>
     </div>
     <nav class="gnav">
       <ul class="menu">
