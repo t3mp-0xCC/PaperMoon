@@ -15,6 +15,7 @@ extern crate log;
 mod article;
 mod cruds;
 mod db;
+mod error;
 mod models;
 mod router;
 mod schema;
