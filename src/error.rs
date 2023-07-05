@@ -16,7 +16,7 @@ use actix_web::{
 };
 
 // error handler will catch this response and reder error page
-pub fn error_page_response(status: u16,message: &str) -> Result<HttpResponse, Error>{
+pub fn error_page_response(status: u16,message: &str) -> HttpResponse {
     let mut resp = HttpResponseBuilder::new(
         match StatusCode::from_u16(status) {
             Ok(status) => status,
@@ -25,7 +25,7 @@ pub fn error_page_response(status: u16,message: &str) -> Result<HttpResponse, Er
                     StatusCode::INTERNAL_SERVER_ERROR
                 );
                 handle_resp.insert_header(("X-Error-Message", "Invalid StatusCode"));
-                return Ok(handle_resp.finish())
+                return handle_resp.finish()
             },
         }
     );
@@ -34,7 +34,7 @@ pub fn error_page_response(status: u16,message: &str) -> Result<HttpResponse, Er
         message
     ));
 
-    Ok(resp.finish())
+    resp.finish()
 }
 
 pub fn render_error_page<B>(res: ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
@@ -71,7 +71,7 @@ pub fn render_error_page<B>(res: ServiceResponse<B>) -> Result<ErrorHandlerRespo
                 }}
 
                 .error-message {{
-                    font-size: 2rem;
+                    font-size: 4rem;
                     color: #869D6A;
                 }}
             </style>
@@ -79,7 +79,7 @@ pub fn render_error_page<B>(res: ServiceResponse<B>) -> Result<ErrorHandlerRespo
         <body>
             <div class=\"content\">
                 <div class=\"status-code\">{}</div>
-                <class=\"error-message\">{}</div>
+                <div class=\"error-message\">{}</div>
             </div>
         </body>
     ", status, msg);
