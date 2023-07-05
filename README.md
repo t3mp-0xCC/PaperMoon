@@ -1,4 +1,5 @@
 # PaperMoon
+It's Only a Paper Moon...  
 
 ## Initialize
 1. Setup `.env` file
@@ -17,7 +18,7 @@ TZ=Asia/Tokyo
 $ docker-compose up -d
 ```
 
-3.  Setup Databse using diesel
+3.  Setup Database using diesel
 ```
 $ diesel migration run
 ```
