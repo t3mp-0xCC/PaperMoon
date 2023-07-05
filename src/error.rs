@@ -1,18 +1,47 @@
+use core::panic;
+
 use actix_web::{
     dev::ServiceResponse,
-    http::header::{ContentType, HeaderValue},
+    http::header::{
+        ContentType,
+        HeaderName,
+        HeaderValue,
+    },
+    http::StatusCode,
     middleware::ErrorHandlerResponse,
+    Error,
+    HttpResponse,
     HttpResponseBuilder,
     Result,
 };
 
+// error handler will catch this response and reder error page
+pub fn error_page_response(status: u16,message: &str) -> Result<HttpResponse, Error>{
+    let mut resp = HttpResponseBuilder::new(
+        match StatusCode::from_u16(status) {
+            Ok(status) => status,
+            Err(_) => {
+                let mut handle_resp = HttpResponseBuilder::new(
+                    StatusCode::INTERNAL_SERVER_ERROR
+                );
+                handle_resp.insert_header(("X-Error-Message", "Invalid StatusCode"));
+                return Ok(handle_resp.finish())
+            },
+        }
+    );
+    resp.insert_header((
+        "X-Error-Message",
+        message
+    ));
 
+    Ok(resp.finish())
+}
 
 pub fn render_error_page<B>(res: ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
     let status = res.status();
     let (request, response) = res.into_parts();
     let def_msg = HeaderValue::from_static("");
-    let msg = response.headers().get("X-Err-Msg")
+    let msg = response.headers().get("X-Error-Message")
         .unwrap_or(&def_msg)
         .to_str()
         .unwrap();
