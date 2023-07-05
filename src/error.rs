@@ -1,6 +1,9 @@
 use actix_web::{
-    HttpRequest,
-    HttpResponse,
+    dev::ServiceResponse,
+    http::header::ContentType,
+    middleware::ErrorHandlerResponse,
+    HttpResponseBuilder,
+    Result,
 };
 
 /* HTTP Error used in PaperMoon
@@ -8,10 +11,16 @@ use actix_web::{
  - InternalServerError
  */
 
-async fn handle_error(err: actix_web::Error, _: &HttpRequest) -> Result<HttpResponse, actix_web::Error> {
-    // Handle specific errors or error types if needed
-    // For example, you can check for specific status codes and return custom responses
+pub fn render_error_page<B>(res: ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
+    let status = res.status();
+    let request = res.into_parts().0;
+    let html = "<h1> Error 0w0 </h1>";
 
-    // Return a generic error response with a 500 status code
-    Ok(HttpResponse::InternalServerError().body("Internal Server Error"))
+    let new_response = HttpResponseBuilder::new(status)
+    .insert_header(ContentType::html())
+    .body(html);
+
+    Ok(ErrorHandlerResponse::Response(
+        ServiceResponse::new(request, new_response).map_into_right_body(),
+    ))
 }

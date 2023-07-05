@@ -1,10 +1,14 @@
 use actix_cors::Cors;
 use actix_files::Files;
 use actix_web::{
+    http::StatusCode,
     App,
     HttpServer,
 };
-use actix_web::middleware::Logger;
+use actix_web::middleware::{
+    Logger,
+    ErrorHandlers,
+};
 use dotenv::dotenv;
 use env_logger::Env;
 use std::path::Path;
@@ -20,6 +24,16 @@ mod models;
 mod router;
 mod schema;
 mod watcher;
+
+use error::render_error_page as render_error_page;
+
+macro_rules! error_handler_many {
+    ($handler:ident, [$($variant:ident),*]) => {
+        ErrorHandlers::new()
+            $(.handler(StatusCode::$variant, $handler))+
+    }
+}
+
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -39,6 +53,13 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors)
             .wrap(Logger::default())
+            .wrap(error_handler_many!(render_error_page, [BAD_REQUEST, UNAUTHORIZED, FORBIDDEN,
+            NOT_FOUND, METHOD_NOT_ALLOWED, NOT_ACCEPTABLE, REQUEST_TIMEOUT, GONE,
+            LENGTH_REQUIRED, PAYLOAD_TOO_LARGE, URI_TOO_LONG, UNSUPPORTED_MEDIA_TYPE,
+            RANGE_NOT_SATISFIABLE, IM_A_TEAPOT, TOO_MANY_REQUESTS,
+            REQUEST_HEADER_FIELDS_TOO_LARGE, MISDIRECTED_REQUEST, UPGRADE_REQUIRED,
+            INTERNAL_SERVER_ERROR, NOT_IMPLEMENTED, SERVICE_UNAVAILABLE,
+            HTTP_VERSION_NOT_SUPPORTED]))
             .service(router::index)
             .service(router::article)
             .service(router::article_list)
