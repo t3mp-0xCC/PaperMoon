@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Context};
 use easy_scraper::Pattern;
 use pulldown_cmark::{html, Options, Parser};
+use regex::Regex;
 use std::fs;
 use std::path::Path;
 
@@ -28,6 +29,12 @@ fn get_title_from_html(html_content: String) -> anyhow::Result<String> {
     Ok(matches[0]["title"].clone())
 }
 
+
+fn remove_first_h1_tag(html: &mut String) {
+    let re = Regex::new(r#"<h1>.*?</h1>"#).unwrap();
+    *html = re.replace(html, "").into_owned();
+}
+
 pub fn importer(md_path: &Path) -> anyhow::Result<()> {
     let content_id = match md_path.file_stem() {
         Some(osstr) => match osstr.to_owned().into_string() {
@@ -37,8 +44,9 @@ pub fn importer(md_path: &Path) -> anyhow::Result<()> {
         None => return Err(anyhow!("Failed to get conent_id")),
     };
     cruds::check_duplicate(&content_id)?;
-    let html = markdown_to_html(md_path)?;
+    let mut html = markdown_to_html(md_path)?;
     let title = get_title_from_html(html.clone())?;
+    remove_first_h1_tag(&mut html);
     cruds::create_post(&content_id, &title, &html)?;
 
     Ok(())
