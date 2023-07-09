@@ -120,6 +120,15 @@ mod article_tests {
 
     #[test]
     #[ignore]
+    fn import_untitled_post() {
+        let md_path = Path::new("./test/test_untitled.md");
+        importer(md_path)
+            .expect("Failed to import test Markdown");
+    }
+
+
+    #[test]
+    #[ignore]
     fn updater_test() {
         let md_path = Path::new("./test/test.md");
         let new_md_path = Path::new("/tmp/test.md");
